@@ -1,1 +1,3 @@
-print("hello sql")
+import table_class as tc
+
+tc.selectAll()
