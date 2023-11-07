@@ -1,10 +1,7 @@
-<<<<<<<<< Temporary merge branch 1
-
-
 def test():
     print("Hello world")
 
-=========
+
 import psycopg2
 
 def selectAll():
@@ -19,4 +16,4 @@ def selectAll():
         print(row)
 def test():
     print("Hello sql")
->>>>>>>>> Temporary merge branch 2
+
