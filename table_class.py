@@ -20,5 +20,3 @@ def selectAll():
 def test():
     print("Hello sql")
 
-# 调用 selectAll 函数来执行 SQL 查询
-selectAll()
