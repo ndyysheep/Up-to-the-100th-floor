@@ -27,24 +27,21 @@ def pull():
     print("读取存档成功")
     return table_records
 
-def push(modified_records):
+def push(table_records):
     engine = create_engine('postgresql+psycopg2://ztq:ztqnb123@47.113.185.205:5432/db', echo=False)
     Session = sessionmaker(bind=engine)
     session = Session()
-    """
-    将修改后的记录推送（保存）到数据库。
 
-    :param session: SQLAlchemy 会话对象
-    :param modified_records: 修改后的记录列表
-    """
     try:
-        for record in modified_records:
-            session.add(record)  # 将修改后的记录添加到会话中
+        for table_name, records in table_records.items():
+            for record in records:
+                session.add(record)  # 将修改后的记录添加到会话中
         session.commit()  # 提交更改
-        print("修改成功")
+        print("所有修改已成功保存到数据库")
     except Exception as e:
         session.rollback()  # 如果出现异常，回滚更改
-        raise e  # 可以选择重新抛出异常或者处理它
+        print(f"保存修改时出错: {e}")
     finally:
-        session.close()  # 无论如何，最后都关闭会话
+        session.close()  # 关闭会话
+
 
