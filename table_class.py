@@ -44,4 +44,28 @@ def push(table_records):
     finally:
         session.close()  # 关闭会话
 
+def delete_role(role_id):
+    engine = create_engine('postgresql+psycopg2://ztq:ztqnb123@47.113.185.205:5432/db', echo=False)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
+    try:
+        # 假设 'role' 表对应的类名为 Role
+        metadata = MetaData()
+        metadata.reflect(bind=engine)
+        Role = create_class_for_table('role', metadata, engine)
+
+        # 查询出对应 ID 的角色
+        role_to_delete = session.query(Role).filter(Role.id == role_id).first()
+
+        if role_to_delete:
+            session.delete(role_to_delete)  # 删除角色
+            session.commit()  # 提交更改
+            print(f"角色 {role_id} 已从数据库中删除")
+        else:
+            print(f"未找到 ID 为 {role_id} 的角色")
+    except Exception as e:
+        session.rollback()  # 如果出现异常，回滚更改
+        print(f"删除角色时出错: {e}")
+    finally:
+        session.close()  # 关闭会话

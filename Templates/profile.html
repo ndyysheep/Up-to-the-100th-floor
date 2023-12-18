@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>个人信息</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 900px; /* 调整最大宽度 */
+            width: 100%;
+        }
+        h1 {
+            color: #6A5ACD; /* 为标题添加颜色 */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-section > div {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* 垂直居中 */
+            align-items: center; /* 水平居中 */
+        }
+
+        p, ul {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .item {
+            color: lightseagreen; /* 为基本信息添加颜色 */
+        }
+        .hp {
+            color: red; /* 为生命值添加颜色 */
+        }
+        .money {
+            color: goldenrod; /* 为钱币添加颜色 */
+        }
+        .action_point {
+            color: blue; /* 为行动点添加颜色 */
+        }
+        .ass {
+            color: purple; /* 为饰品标题添加颜色 */
+        }
+        .word {
+            color: deeppink; /* 为装备描述添加颜色 */
+        }
+        .wp {
+            color: #6A5ACD; /* 为装备标题添加颜色 */
+            font-size: 25px; /* 字体大小设置为 25px */
+        }
+        .item-stats {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: space-around;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .item-stats p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .stat-value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .equipment-section {
+            margin-top: 20px;
+        }
+        .equipment {
+            display: flex;
+            justify-content: space-between;
+        }
+        .equipment-item {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            flex-basis: 48%;
+        }
+        .accessory-name {
+        float: left; /* 使名称靠左 */
+        }
+
+        .accessory-description {
+            display: block; /* 使描述从新行开始 */
+            margin-left: 50%; /* 从容器的中间开始 */
+            text-align: left; /* 描述文字左对齐 */
+        }
+        .accessory-stats {
+            margin-top: 10px; /* 添加一些间距 */
+        }
+
+        .accessory-stats span {
+            display: block; /* 每个属性单独一行 */
+            margin-bottom: 5px; /* 在属性之间添加一些间距 */
+        }
+
+
+        .item-stats {
+            margin-top: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #eee;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #FFA07A;
+        }
+        a {
+            display: inline-block;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 30px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ profile.name }}</h1>
+        <div class="info-section">
+            <div>
+                <p class="wp">基础信息:</p>
+                <p class="hp">生命值: {{ profile.hp }}</p>
+                <p class="money">钱币: {{ profile.money }}</p>
+                <p class="action_point">行动点: {{ profile.action_point }}</p>
+            </div>
+            <div class="equipment-section">
+                <p class="wp">装备</p>
+                <div class="equipment">
+                    <div class="equipment-item">
+                        <span class="item">{{ profile.item1.item_name }}</span>
+                        <span class="word">({{ profile.item1.i_description }})</span>
+                        <div class="item-stats">
+                            <p>攻击力: <span class="stat-value">{{ profile.item1.atk }}</span></p>
+                            <p>格挡值: <span class="stat-value">{{ profile.item1.dft }}</span></p>
+                            <p>生命恢复: <span class="stat-value">{{ profile.item1.hp }}</span></p>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span class="item">{{ profile.item2.item_name }}</span>
+                        <span class="word">({{ profile.item2.i_description }})</span>
+                        <div class="item-stats">
+                            <p>攻击力: <span class="stat-value">{{ profile.item2.atk }}</span></p>
+                            <p>格挡值: <span class="stat-value">{{ profile.item2.dft }}</span></p>
+                            <p>生命恢复: <span class="stat-value">{{ profile.item2.hp }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="ass">饰品:</p>
+        <ul>
+            {% for accessory in profile.accessory %}
+            <li>
+                <span class="accessory-name">{{ accessory.name }}</span>
+                <span class="accessory-description">描述： {{ accessory.description }}</span>
+                <div class="accessory-stats">
+                   攻击力: {{ accessory.atk }} 格挡值: {{ accessory.dft }} 生命恢复: {{ accessory.hp }}
+                </div>
+            </li>
+
+            {% endfor %}
+        </ul>
+        <a href="/floor/">返回主菜单</a>
+    </div>
+        <input type="hidden" name="role_id" value="{{ role_id }}">
+        <input type="hidden" name="floor_id" value="{{floor_id}}">
+        <input type="hidden" name="role_name" value="{{role_name}}">
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battle Game</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* 添加你的样式 */
+    </style>
+</head>
+<body>
+    <div id="battlefield">
+        <div>
+            <h2>{{ player_name }}</h2>
+            <p>生命值: <span id="player-health">{{ player_health }}</span></p>
+            <p>攻击力: <span id="player-atk">{{ player_atk }}</span></p>
+            <p>格挡值: <span id="player-dft">{{ player_dft }}</span></p>
+        </div>
+        <div>
+            <h2>{{ enemy_name }}</h2>
+            <p>生命值: <span id="enemy-health">{{ enemy_health }}</span></p>
+            <p>攻击力: <span id="enemy-matk">{{ enemy_matk }}</span></p>
+            <p>格挡值: <span id="enemy-mdft">{{ enemy_mdft }}</span></p>
+        </div>
+    </div>
+
+    <button onclick="takeAction('skip')">跳过回合</button>
+    <button onclick="takeAction('fight')">选择武器</button>
+    <div id="items" style="display:none;">
+        <button onclick="takeAction('item1')">{{ item1_name }}</button>
+        <button onclick="takeAction('item2')">{{ item2_name }}</button>
+    </div>
+
+    <div id="message"></div>
+
+    <script>
+                // 定义函数 takeAction，接收一个参数 action，代表玩家的操作
+        function takeAction(action) {
+            // 如果玩家选择战斗（即 action 等于 'fight'）
+            if (action === 'fight') {
+                // 显示物品按钮，同时隐藏跳过回合和选择战斗的按钮
+                document.getElementById('items').style.display = 'block';
+                document.querySelector('button[onclick="takeAction(\'skip\')"]').style.display = 'none';
+                document.querySelector('button[onclick="takeAction(\'fight\')"]').style.display = 'none';
+            }
+
+            // 发起一个 AJAX 请求到服务器
+            $.ajax({
+                url: '/take_action', // 请求的 URL 地址，即后端处理操作的接口
+                type: 'POST', // 使用 POST 方法发送请求
+                contentType: 'application/json', // 请求内容的类型为 JSON
+                data: JSON.stringify({ "action": action }), // 将操作作为 JSON 数据发送
+                dataType: 'json', // 期望从服务器返回的数据类型为 JSON
+
+                // 请求成功时的回调函数，接收服务器返回的响应数据
+                success: function(response) {
+                    // 如果游戏结束（response 中包含 game_over 属性）
+                    if (response.game_over) {
+                        // 显示游戏结束的信息，并显示获胜者
+                        $('#message').text('Game Over! Winner: ' + response.winner);
+                        // 禁用所有按钮，防止玩家继续操作
+                        $('button').prop('disabled', true);
+                    } else {
+                        // 如果游戏没有结束，更新玩家和敌人的生命值显示
+                        $('#player-health').text(response.player_health);
+                        $('#enemy-health').text(response.enemy_health);
+
+                        // 如果当前不是玩家的回合
+                        if (!response.player_turn) {
+                            // 隐藏物品按钮，显示跳过回合和选择战斗的按钮
+                            document.getElementById('items').style.display = 'none';
+                            document.querySelector('button[onclick="takeAction(\'skip\')"]').style.display = 'block';
+                            document.querySelector('button[onclick="takeAction(\'items\')"]').style.display = 'block';
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

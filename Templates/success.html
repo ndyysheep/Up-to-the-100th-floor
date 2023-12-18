@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录成功</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 50vh;
+            margin: 0;
+        }
+        form {
+            width: 300px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .save-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        label {
+            width: 120px; /* Set a fixed width for the labels */
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .hidden {
+            display: none;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            flex-grow: 1; /* Allow the submit button to take up remaining space */
+            background-color: #4C6666;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="button"] {
+            width: 80px; /* Set a fixed width for the delete buttons */
+            background-color: #CC6666;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>开始游戏</h1>
+    <p>欢迎, {{ username }}! 请选择冒险</p>
+    <form action="/start" method="post">
+        <div class="save-btn">
+            <label for="newRoleName">新角色名称</label>
+            <input type="text" name="newRoleName" id="newRoleName">
+        </div>
+        <div class="save-btn">
+            <label>{{role_name0}} 楼层{{floor0}}</label>
+            <input type="submit" name="action" value="存档一" onclick="return handleClick('{{ role_id0 }}')">
+            <input type="button" name="delete_action" value="删除" onclick="deleteSave('{{ role_name0 }}', '{{ role_id0 }}')">
+        </div>
+        <div class="save-btn">
+            <label>{{role_name1}} 楼层{{floor1}}</label>
+            <input type="submit" name="action" value="存档二" onclick="return handleClick('{{ role_id1 }}')">
+            <input type="button" name="delete_action" value="删除" onclick="deleteSave('{{ role_name1 }}', '{{ role_id1 }}')">
+        </div>
+        <div class="save-btn">
+            <label>{{role_name2}} 楼层{{floor2}}</label>
+            <input type="submit" name="action" value="存档三" onclick="return handleClick('{{ role_id2 }}')">
+            <input type="button" name="delete_action" value="删除" onclick="deleteSave('{{ role_name2 }}', '{{ role_id2 }}')">
+        </div>
+        <input type="hidden" name="username" value="{{ username }}">
+        <input type="hidden" name="role_id0" value="{{ role_id0 }}">
+        <input type="hidden" name="role_id1" value="{{ role_id1 }}">
+        <input type="hidden" name="role_id2" value="{{ role_id2 }}">
+    </form>
+
+    <a href="{{ url_for('index') }}">返回登录页面</a>
+
+
+    <script>
+        function handleClick(roleId) {
+            // 判断是否为新角色
+            if (roleId === '') {
+                // 显示新角色名称输入字段
+                document.getElementById('newRoleDiv').style.display = 'flex';
+
+                var newRoleName = prompt("请输入新角色名称:");
+                if (newRoleName === null || newRoleName.trim() === "") {
+                    return false;
+                } else {
+                    document.getElementById('newRoleName').value = newRoleName;
+                }
+            }
+
+            // 其他逻辑或表单提交
+            return true;
+        }
+
+        function deleteSave(roleName, roleId) {
+            if (confirm("确定删除角色 " + roleName + " 的存档吗？")) {
+                window.location.href = "/delete?username={{ username }}&role_id=" + roleId;
+            }
+        }
+    </script>
+</body>
+</html>

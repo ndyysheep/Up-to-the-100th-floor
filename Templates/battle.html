@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Battle</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #5D4037;
+        }
+
+        #game {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: white;
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .character {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .player {
+            border-right: 2px solid #ddd;
+        }
+
+        .enemy {
+            border-left: 2px solid #ddd;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #388E3C;
+        }
+
+        p, #accessory-description {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        #message {
+            color: #d32f2f;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>游戏战斗</h1>
+    <div id="game">
+        <div class="character player">
+            <h2>{{ player_name }}</h2>
+            <p>生命值: <span id="player_hp">{{ player_health }}</span></p>
+            <p>攻击力: <span id="player_atk">{{ player_atk }}</span></p>
+            <p>防御力: <span id="player_dft">{{ player_dft }}</span></p>
+            <p>行动点: <span id="action_points">{{ status.actp }}</span></p>
+            <button id="choose_weapon">选择武器</button>
+            <button id="item1" style="display:none;">{{ item1_name }}</button>
+            <button id="item2" style="display:none;">{{ item2_name }}</button>
+        </div>
+        <div class="character enemy">
+            <h2>{{ enemy_name }}</h2>
+            <p>生命值: <span id="monster_hp">{{ enemy_health }}</span></p>
+            <p>攻击力: <span id="monster_atk">{{ enemy_matk }}</span></p>
+            <p>防御力: <span id="monster_dft">{{ enemy_mdft }}</span></p>
+        </div>
+        <button id="skip">跳过回合</button>
+    </div>
+    <div id="accessory-description">
+        {{ accessory_description }}
+    </div>
+    <p id="message"></p>
+    <!-- 在页面底部添加返回主界面的按钮 -->
+    <button id="back-to-menu" style="display: none;">返回主界面</button>
+    <button id="restart-game" style="display: none;">重新开始</button>
+
+
+    <script>
+    $(document).ready(function() {
+        function updateGameState(data) {
+            // 更新玩家和怪物的状态信息
+            $('#player_hp').text(data.player_hp);
+            $('#monster_hp').text(data.enemy_health);
+            $('#player_atk').text(data.player_atk);
+            $('#player_dft').text(data.player_dft);
+            $('#monster_atk').text(data.enemy_matk);
+            $('#monster_dft').text(data.enemy_mdft);
+            $('#action_points').text(data.action_points);
+            $('#turn').text(data.player_turn ? '玩家回合' : '怪物回合');
+            $('#message').text(data.message);
+
+            // 根据游戏状态显示或隐藏按钮
+            if (data.game_over) {
+                // 游戏结束，禁用所有动作按钮，并显示结束消息
+                $('#skip, #choose_weapon, #item1, #item2').prop('disabled', true);
+                $('#message').append(data.victory ? ' 恭喜，你赢了！' : ' 很遗憾，你输了。');
+
+                if (data.victory) {
+                    // 如果玩家获胜，显示返回主界面的按钮
+                    $('#back-to-menu').show();
+                    $('#restart-game').hide();  // 隐藏重新开始的按钮
+                } else {
+                    // 如果玩家失败，显示重新开始的按钮
+                    $('#restart-game').show();
+                    $('#back-to-menu').hide();  // 隐藏返回主界面的按钮
+                }
+            } else {
+                // 游戏未结束，隐藏返回主界面和重新开始的按钮
+                $('#back-to-menu, #restart-game').hide();
+
+                // 根据当前回合显示相应的按钮
+                if (data.player_turn) {
+                    $('#item1, #item2').hide();
+                    $('#skip, #choose_weapon').show();
+                } else {
+                    $('#skip, #choose_weapon').hide();
+                    $('#item1, #item2').show();
+                }
+            }
+        }
+
+        // 给返回主界面的按钮添加点击事件处理
+        $('#back-to-menu').click(function() {
+            window.location.href = '/';  // 将用户重定向到主界面
+        });
+
+        // 给重新开始的按钮添加点击事件处理
+        $('#restart-game').click(function() {
+            // 重载当前页面或重定向到游戏开始界面
+             window.location.href = '/';  // 将用户重定向到主界面
+        });
+
+        $('#skip, #choose_weapon, #item1, #item2').click(function() {
+            let action_type = this.id;
+            if (action_type === 'choose_weapon') {
+                $('#skip, #choose_weapon').hide();
+                $('#item1, #item2').show();
+            } else {
+                $.ajax({
+                    url: '/action',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 'action_type': action_type }),
+                    success: function(response) {
+                        updateGameState(response);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>
+
+
