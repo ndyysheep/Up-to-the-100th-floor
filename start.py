@@ -150,11 +150,29 @@ def floor():
         cur.execute("UPDATE role SET f_id = {:d} WHERE role.id = {:s}".format(f_id + 1, role_id))
         conn.commit()
         ShopOrMonster, temp = goNextFloor(f_id + 1)
+        # temp是list类，转化为单个字符
+        temp = temp[0]
         if ShopOrMonster:
             return render_template("shop.html", role_id=role_id, layer=temp)
         else:
-            return render_template("floor.html", role_name=role_name, floor_id=f_id+1, role_id=role_id)
-            #return render_template("game.html", role_id=role_id, f_id=temp)
+            global status
+            role_id = int(role_id)
+            status = battle.initialize_game(role_id, temp)
+
+            return render_template('battle.html',
+                                   player_health=status.hp,
+                                   player_atk=status.atk,
+                                   player_dft=status.dft,
+                                   enemy_health=status.mhp,
+                                   player_turn=status.player_turn,
+                                   enemy_name=status.mname,
+                                   enemy_matk=status.matk,
+                                   enemy_mdft=status.mdft,
+                                   player_name=status.name,
+                                   item1_name=status.item1.item_name if status.item1 else '无',
+                                   item2_name=status.item2.item_name if status.item2 else '无',
+                                   accessory_description=status.a_description,
+                                   status=status)
     if action == "退出游戏":
         return render_template("index.html")
     if action == "查看角色信息":
