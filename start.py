@@ -159,7 +159,7 @@ def floor():
         return render_template("index.html")
     if action == "查看角色信息":
         # 重定向到角色信息页面
-        return redirect(url_for('profile_index', floor_id=role[0], role_name=role[1], role_id=role_id))
+        return redirect(url_for('profile_index', floor_id=role[0], role_name=role[1], role_id=role_id, player_id=role_id))
     # 如果没有匹配的动作，可以重定向到主页或返回一个默认页面
     return redirect(url_for('menu'))
 
